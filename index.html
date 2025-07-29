@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="icon" href="./images/heavy-rain.png" type="image/gif" sizes="16x16">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <h1>Weather App</h1>
+        <form id="search-form">
+            <div style="position: relative;" class="input-container">
+                <input type="text" id="city-input" placeholder="ค้นหาชื่อเมือง..." required>
+                <div id="search-history" class="search-history"></div>
+            </div>
+            <button type="submit">ค้นหา</button>
+        </form>
+        <div id="weather-info-container" class="weather-info">
+            <p>ป้อนชื่อเมืองเพื่อดูสภาพอากาศ</p>
+        </div>
+        <div id="forecast-container" class="forecast-container" style="display: none;">
+            <h3 class="forecast-title">พยากรณ์อากาศ 5 วัน</h3>
+            <div id="forecast-grid" class="forecast-grid"></div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
