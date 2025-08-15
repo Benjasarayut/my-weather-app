@@ -1,5 +1,4 @@
-const apiKey = '4bc2f12849bea88888eeb34739bc6e5c';
-
+const apiKey = 'a0602a20cc7569820c999e06fe0a2467';
 const searchForm = document.querySelector('#search-form');
 const cityInput = document.querySelector('#city-input');
 const weatherInfoContainer = document.querySelector('#weather-info-container');
@@ -7,8 +6,8 @@ const forecastContainer = document.querySelector('#forecast-container');
 const forecastGrid = document.querySelector('#forecast-grid');
 const searchHistory = document.querySelector('#search-history');
 
-// Search history management
-let searchHistoryData = JSON.parse(localStorage.getItem('weatherSearchHistory')) || [];
+// Search history management (using in-memory storage for Claude.ai)
+let searchHistoryData = [];
 
 searchForm.addEventListener('submit', (event) => {
     event.preventDefault();
@@ -25,7 +24,7 @@ searchForm.addEventListener('submit', (event) => {
 // Show/hide search history
 cityInput.addEventListener('focus', showSearchHistory);
 cityInput.addEventListener('blur', () => {
-    setTimeout(hideSearchHistory, 200); // Delay to allow clicking on history items
+    setTimeout(hideSearchHistory, 200);
 });
 
 cityInput.addEventListener('input', (e) => {
@@ -55,7 +54,6 @@ async function getWeather(city) {
         weatherInfoContainer.innerHTML = `<p class="error">${error.message}</p>`;
         forecastContainer.style.display = 'none';
     }
-
 }
 
 async function getForecast(city) {
@@ -70,7 +68,6 @@ async function getForecast(city) {
     } catch (error) {
         console.error('Forecast error:', error);
     }
-    localStorage.setItem('lastCity', city);
 }
 
 function displayWeather(data) {
@@ -92,7 +89,7 @@ function displayWeather(data) {
 }
 
 function displayForecast(data) {
-    const forecasts = data.list.filter((item, index) => index % 8 === 0).slice(0, 5); // Every 24 hours, 5 days
+    const forecasts = data.list.filter((item, index) => index % 8 === 0).slice(0, 5);
 
     let forecastHtml = '';
     forecasts.forEach((forecast, index) => {
@@ -123,9 +120,8 @@ function updateBackground(data) {
     const temp = data.main.temp;
     const weatherMain = data.weather[0].main.toLowerCase();
 
-    document.body.className = ''; // Reset classes
+    document.body.className = '';
 
-    // Weather-based background
     if (weatherMain.includes('rain')) {
         document.body.classList.add('rainy');
     } else if (weatherMain.includes('snow')) {
@@ -136,7 +132,6 @@ function updateBackground(data) {
         document.body.classList.add(isDaytime ? 'sunny-day' : 'sunny-night');
     }
 
-    // Temperature-based adjustments
     if (temp > 35) {
         document.body.classList.add('hot');
     } else if (temp < 10) {
@@ -145,16 +140,9 @@ function updateBackground(data) {
 }
 
 function addToSearchHistory(city) {
-    // Remove if already exists
     searchHistoryData = searchHistoryData.filter(item => item.toLowerCase() !== city.toLowerCase());
-    // Add to beginning
     searchHistoryData.unshift(city);
-    // Keep only last 5 searches
     searchHistoryData = searchHistoryData.slice(0, 5);
-    // Save to localStorage
-    localStorage.setItem('weatherSearchHistory', JSON.stringify(searchHistoryData));
-    // Update last searched city
-    localStorage.setItem('lastCity', city);
 }
 
 function showSearchHistory() {
@@ -186,15 +174,6 @@ function selectHistoryItem(city) {
     getWeather(city);
 }
 
-// Load last searched city on page load
-window.addEventListener('DOMContentLoaded', () => {
-    const lastCity = localStorage.getItem('lastCity');
-    if (lastCity) {
-        cityInput.value = lastCity;
-        getWeather(lastCity);
-    }
-});
-
 // Close search history when clicking outside
 document.addEventListener('click', (e) => {
     if (!searchForm.contains(e.target)) {
@@ -202,22 +181,8 @@ document.addEventListener('click', (e) => {
     }
 });
 
-function updateBackground(weather) {
-    const now = new Date();
-    const hour = now.getHours();
-    const isDaytime = hour >= 6 && hour <= 18;
-
-    if (isDaytime) {
-        document.body.style.background = 'linear-gradient(135deg, #87cefa, #f0e68c)';
-    } else {
-        document.body.style.background = 'linear-gradient(135deg, #0f2027, #203a43, #2c5364)';
-    }
-}
-
+// Default weather display
 window.addEventListener('DOMContentLoaded', () => {
-    const lastCity = localStorage.getItem('lastCity');
-    if (lastCity) {
-        cityInput.value = lastCity;
-        getWeather(lastCity);
-    }
+    // You can set a default city here if desired
+    // getWeather('Bangkok');
 });
